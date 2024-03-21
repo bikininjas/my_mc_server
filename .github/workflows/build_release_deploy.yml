@@ -12,11 +12,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4.1.1
+    - name: Tag/Release on Push Action
+      uses: rymndhng/release-on-push-action@v0.28.0
+            
 #    - name: Docker Lint
 #      uses: luke142367/Docker-Lint-Action@v1.1.1
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
-    - name: GH Release
-      uses: softprops/action-gh-release@v2.0.4
     - name: Metrics embed
       uses: lowlighter/metrics@v3.34
