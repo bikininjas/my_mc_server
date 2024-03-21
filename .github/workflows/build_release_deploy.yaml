@@ -1,0 +1,24 @@
+name: example-basic
+# This workflow represents a set of basic End-to-End tests
+on:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+  workflow_dispatch:
+jobs:
+  basic-ubuntu-20:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4.1.1
+    - name: OpenCommit — improve commits with AI 🧙
+      uses: di-sukharev/opencommit@github-action-v1.0.2
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v5.3.0
+    - name: GH Release
+      uses: softprops/action-gh-release@v2.0.4
+    - name: Super-Linter
+      uses: super-linter/super-linter@v6.3.0
+    - name: Metrics embed
+      uses: lowlighter/metrics@v3.34
