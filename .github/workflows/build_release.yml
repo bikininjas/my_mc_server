@@ -33,14 +33,12 @@ jobs:
           type=schedule
           type=semver,pattern={{version}}
           type=raw,value=${{ steps.tag_version.outputs.new_tag }}
-    - name: Changelog from Conventional Commits
-      id: changelog_action
-      uses: requarks/changelog-action@v1.10.1
+    - name: Create changelog text
+      id: changelog
+      uses: loopwerk/tag-changelog@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        writeToFile: true
-        includeInvalidCommits: true
+        exclude_types: other
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
       with:
@@ -50,7 +48,7 @@ jobs:
     - name: GH Release
       uses: softprops/action-gh-release@v2.0.4
       with:
-        body: ${{ steps.changelog_action.outputs.changes }}
+        body: ${{ steps.changelog.outputs.changes }}
         tag_name: ${{ steps.tag_version.outputs.new_tag }}
         token: ${{ secrets.GITHUB_TOKEN }}
         generate_release_notes: true
