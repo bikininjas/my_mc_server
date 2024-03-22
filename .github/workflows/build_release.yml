@@ -29,6 +29,10 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ secrets.DOCKERHUB_USERNAME }}/paper-server
+        tags: |
+          type=schedule
+          type=semver,pattern={{version}}
+          type=raw,value=${{ steps.tag_version.outputs.new_tag }}
     # - name: Changelog from Conventional Commits
     #   uses: requarks/changelog-action@v1.10.1
     #   with:
