@@ -32,6 +32,10 @@ jobs:
         body: ${{ steps.tag_version.outputs.changelog }}
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
+      with:
+        push: true
+        context: .
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/paper-server:latest
   reporting:
     needs: build-push
     runs-on: ubuntu-latest
