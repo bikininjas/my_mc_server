@@ -33,34 +33,43 @@ jobs:
           type=schedule
           type=semver,pattern={{version}}
           type=raw,value=${{ steps.tag_version.outputs.new_tag }}
-    # - name: Changelog from Conventional Commits
-    #   uses: requarks/changelog-action@v1.10.1
-    #   with:
-    #     token: ${{ secrets.GITHUB_TOKEN }}
-    #     tag: ${{ steps.tag_version.outputs.new_tag }}
-    #     writeToFile: true
-    #     includeInvalidCommits: true
-    - name: "Build Changelog"
-      id: build_changelog
-      uses: mikepenz/release-changelog-builder-action@v4.2.0
+    - name: Changelog from Conventional Commits
+      id: changelog_action
+      uses: requarks/changelog-action@v1.10.1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        commitMode: true
-        outputFile: CHANGELOG.MD
-        fetchViaCommits: true
-    - name: Create a GitHub release
-      uses: ncipollo/release-action@v1
-      with:
         tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.build_changelog.outputs.changelog }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+        writeToFile: true
+        includeInvalidCommits: true
+    # - name: "Build Changelog"
+    #   id: build_changelog
+    #   uses: mikepenz/release-changelog-builder-action@v4.2.0
+    #   with:
+    #     token: ${{ secrets.GITHUB_TOKEN }}
+    #     commitMode: true
+    #     outputFile: CHANGELOG.MD
+    #     fetchViaCommits: true
+    
+    # - name: Create a GitHub release
+    #   uses: ncipollo/release-action@v1
+    #   with:
+    #     tag: ${{ steps.tag_version.outputs.new_tag }}
+    #     name: Release ${{ steps.build_changelog.outputs.changelog }}
+    #     body: ${{ steps.tag_version.outputs.changelog }}
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
       with:
         push: true
         context: .
         tags: ${{ steps.docker_metadatas.outputs.tags }}
-
+    - name: GH Release
+      uses: softprops/action-gh-release@v2.0.4
+      with:
+        body: ${{ steps.changelog_action.outputs.changelog }}
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        generate_release_notes: true
+        make_latest: true
     - name: Commit CHANGELOG.md
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
