@@ -19,6 +19,14 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Docker metadata
+      id: docker_metadatas
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/paper-server
+        tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
     - name: GitHub Tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.2
@@ -50,7 +58,8 @@ jobs:
       with:
         push: true
         context: .
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/paper-server:${{ steps.tag_version.outputs.new_tag }}
+        tags: ${{ steps.docker_metadatas.outputs.tags }}
+
     - name: Commit CHANGELOG.md
       uses: stefanzweifel/git-auto-commit-action@v5.0.0
       with:
