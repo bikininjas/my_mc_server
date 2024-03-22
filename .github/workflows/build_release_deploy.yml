@@ -19,19 +19,25 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Tag/Release on Push Action
-      uses: rymndhng/release-on-push-action@v0.28.0
+    - name: GitHub Tag
+      uses: mathieudutour/github-tag-action@v6.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        bump_version_scheme: minor
-#    - name: Docker Lint
-#      uses: luke142367/Docker-Lint-Action@v1.1.1
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
   reporting:
+    needs: build-push
     runs-on: ubuntu-latest
     steps:
     - name: Metrics embed
       uses: lowlighter/metrics@v3.34
-    - name: Actions for Discord
-      uses: Ilshidur/action-discord@0.3.2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Actions for Discord
+    #   uses: Ilshidur/action-discord@0.3.2
