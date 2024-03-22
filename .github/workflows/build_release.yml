@@ -43,7 +43,7 @@ jobs:
       uses: ncipollo/release-action@v1
       with:
         tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.build_changelog.outputs.changelog }}
         body: ${{ steps.tag_version.outputs.changelog }}
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
