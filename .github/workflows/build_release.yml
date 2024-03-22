@@ -19,19 +19,16 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Docker metadata
-      id: docker_metadatas
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ secrets.DOCKERHUB_USERNAME }}/paper-server
-        tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
     - name: GitHub Tag
       id: tag_version
       uses: mathieudutour/github-tag-action@v6.2
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Docker metadata
+      id: docker_metadatas
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ secrets.DOCKERHUB_USERNAME }}/paper-server
     # - name: Changelog from Conventional Commits
     #   uses: requarks/changelog-action@v1.10.1
     #   with:
