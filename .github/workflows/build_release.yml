@@ -48,5 +48,9 @@ jobs:
       uses: lowlighter/metrics@v3.34
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-    # - name: Actions for Discord
-    #   uses: Ilshidur/action-discord@0.3.2
+    - name: Actions for Discord
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@0.3.2
+      with:
+        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been built and pushed.'
