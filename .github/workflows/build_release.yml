@@ -80,10 +80,6 @@ jobs:
   #   needs: build-push
   #   runs-on: ubuntu-latest
   #   steps:
-  #   # - name: Metrics embed
-  #   #   uses: lowlighter/metrics@v3.34
-  #   #   with:
-  #   #     token: ${{ secrets.GITHUB_TOKEN }}
   #   - name: Actions for Discord
   #     env:
   #       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
