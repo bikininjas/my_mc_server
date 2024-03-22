@@ -65,7 +65,7 @@ jobs:
     - name: GH Release
       uses: softprops/action-gh-release@v2.0.4
       with:
-        body: ${{ steps.changelog_action.outputs.changelog }}
+        body: ${{ steps.changelog_action.outputs.changes }}
         tag_name: ${{ steps.tag_version.outputs.new_tag }}
         token: ${{ secrets.GITHUB_TOKEN }}
         generate_release_notes: true
