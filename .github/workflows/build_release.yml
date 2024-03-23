@@ -33,6 +33,7 @@ jobs:
           type=schedule
           type=semver,pattern={{version}}
           type=raw,value=${{ steps.tag_version.outputs.new_tag }}
+          type=raw,value=latest
     - name: Create changelog text
       id: changelog
       uses: loopwerk/tag-changelog@v1
@@ -44,7 +45,7 @@ jobs:
       with:
         push: true
         context: .
-        tags: ${{ steps.docker_metadatas.outputs.tags }}, latest
+        tags: ${{ steps.docker_metadatas.outputs.tags }}
     - name: GH Release
       uses: fregante/release-with-changelog@v3.6.1
       with:
