@@ -1,4 +1,4 @@
-name: Deploy Paper Server on GKE
+name: Deploy Paper Server on AZURE
 # This workflow represents a set of basic End-to-End tests
 on:
   release:
@@ -8,8 +8,9 @@ on:
 jobs:
     deploy_pull:
       permissions:
-        contents: 'read'
-        id-token: 'write'
+        id-token: write
+        contents: read
+        actions: read
       runs-on: ubuntu-latest
       steps:
         - name: Checkout
@@ -21,16 +22,19 @@ jobs:
               renderEngine: 'kompose'
               dockerComposeFile: './docker-compose.yml'
               kompose-version: 'latest'
-        - name: auth GKE
-          id: google_auth
-          uses: 'google-github-actions/auth@v2'
+        - name: Azure login
+          uses: azure/login@v2
           with:
-            workload_identity_provider: 'projects/${{ secrets.GKE_PROJECT_ID }}/locations/global/workloadIdentityPools/${{ secrets.GKE_POOL }}/providers/${{ secrets.GKE_PROVIDER }}'
-            service_account: ${{ secrets.GKE_SERVICE_ACCOUNT }}
-  
-        - name: 'get-credentials'
-          id: gke_creds
-          uses: 'google-github-actions/get-gke-credentials@v2'
+            client-id: ${{ secrets.AZ_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZ_TENANT_ID }}
+            subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
+        
+        - name: Azure CLI script
+          uses: azure/CLI@v1
           with:
-            cluster_name: 'test-cluster1'
-            location: 'europe-west12'
+            azcliversion: latest
+            inlineScript: |
+              az account show
+    # The KUBECONFIG env var is automatically exported and picked up by kubectl.
+        - id: 'get-pods'
+          run: 'kubectl get pods'
