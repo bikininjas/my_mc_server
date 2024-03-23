@@ -44,7 +44,7 @@ jobs:
       with:
         push: true
         context: .
-        tags: ${{ steps.docker_metadatas.outputs.tags }}
+        tags: ${{ steps.docker_metadatas.outputs.tags }}, latest
     - name: GH Release
       uses: fregante/release-with-changelog@v3.6.1
       with:

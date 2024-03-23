@@ -3,7 +3,7 @@ version: '3.8'
 services:
   minecraft:
     container_name: paper
-    image: itzg/minecraft-server
+    image: evilcious/paper-server:${{ steps.tag_version.outputs.new_tag }}
     ports:
       - "25565:25565"
     volumes:
