@@ -1,10 +1,10 @@
 name: Deploy Paper Server
 # This workflow represents a set of basic End-to-End tests
 on:
-#  push:
-#    branches:
-#      - 'master'
-#  pull_request:
+  push:
+    branches:
+      - 'master'
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -24,12 +24,12 @@ jobs:
             id: google_auth
             uses: 'google-github-actions/auth@v2'
             with:
-              workload_identity_provider: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-              service_account: 'my-service-account@my-project.iam.gserviceaccount.com'
+              workload_identity_provider: 'projects/sebsandbbox/locations/global/workloadIdentityPools/mc-server-pool/providers/mc-server-provider'
+              service_account: 'my-mc-server@sebsandbbox.iam.gserviceaccount.com '
     
           - name: 'get-credentials'
             id: gke_creds
             uses: 'google-github-actions/get-gke-credentials@v2'
             with:
-              cluster_name: 'my-cluster'
-              location: 'us-central1-a'
+              cluster_name: 'test-cluster1'
+              location: 'europe-west12'
