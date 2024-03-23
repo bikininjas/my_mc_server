@@ -1,10 +1,10 @@
 name: Checkout, Tag/release, Build, Push
 # This workflow represents a set of basic End-to-End tests
 on:
-#  push:
-#    branches:
-#      - 'master'
-#  pull_request:
+  push:
+    branches:
+      - 'master'
+  pull_request:
   workflow_dispatch:
 jobs:
   build-push:
