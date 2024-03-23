@@ -9,27 +9,30 @@ on:
 
 jobs:
     deploy_pull:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout
-            uses: actions/checkout@v4.1.2
-          - name: Transform docker compose to manifest using Kompose
-            id: bake
-            uses: azure/k8s-bake@v3
-            with:
-               renderEngine: 'kompose'
-               dockerComposeFile: './docker-compose.yml'
-               kompose-version: 'latest'
-          - name: auth GKE
-            id: google_auth
-            uses: 'google-github-actions/auth@v2'
-            with:
-              workload_identity_provider: 'projects/sebsandbbox/locations/global/workloadIdentityPools/mc-server-pool/providers/mc-server-provider'
-              service_account: 'my-mc-server@sebsandbbox.iam.gserviceaccount.com '
-    
-          - name: 'get-credentials'
-            id: gke_creds
-            uses: 'google-github-actions/get-gke-credentials@v2'
-            with:
-              cluster_name: 'test-cluster1'
-              location: 'europe-west12'
+      permissions:
+        contents: 'read'
+        id-token: 'write'
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4.1.2
+        - name: Transform docker compose to manifest using Kompose
+          id: bake
+          uses: azure/k8s-bake@v3
+          with:
+              renderEngine: 'kompose'
+              dockerComposeFile: './docker-compose.yml'
+              kompose-version: 'latest'
+        - name: auth GKE
+          id: google_auth
+          uses: 'google-github-actions/auth@v2'
+          with:
+            workload_identity_provider: 'projects/sebsandbbox/locations/global/workloadIdentityPools/mc-server-pool/providers/mc-server-provider'
+            service_account: 'my-mc-server@sebsandbbox.iam.gserviceaccount.com '
+  
+        - name: 'get-credentials'
+          id: gke_creds
+          uses: 'google-github-actions/get-gke-credentials@v2'
+          with:
+            cluster_name: 'test-cluster1'
+            location: 'europe-west12'
