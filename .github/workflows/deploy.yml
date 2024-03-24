@@ -36,8 +36,18 @@ jobs:
         - name: Create namespace if doesn't exist
           run: |
             kubectl create namespace mc-ns --dry-run -o json | kubectl apply -f -
-        - name: Deploy to AZURE AKS
-          uses: Azure/k8s-deploy@v5
+        - name: Try to pull image from docker hub
+          uses: addnab/docker-run-action@v3
           with:
-            namespace: 'mc-ns'
-            manifests: ${{ steps.bake.outputs.manifestsBundle }}
+            username: ${{ vars.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+            registry: docker.io
+            image: evilcious/paper-server:latest
+            options: -v ${{ github.workspace }}:/work -e ABC=123
+            run: |
+              echo "Hello World"
+        # - name: Deploy to AZURE AKS
+        #   uses: Azure/k8s-deploy@v5
+        #   with:
+        #     namespace: 'mc-ns'
+        #     manifests: ${{ steps.bake.outputs.manifestsBundle }}
