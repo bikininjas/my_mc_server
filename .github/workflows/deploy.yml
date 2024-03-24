@@ -25,16 +25,19 @@ jobs:
         - name: Azure login
           uses: azure/login@v2
           with:
-            client-id: ${{ vars.AZ_CLIENT_ID }}
-            tenant-id: ${{ vars.AZ_TENANT_ID }}
-            subscription-id: ${{ vars.AZ_SUBSCRIPTION_ID }}
-        
-        - name: Azure CLI script
-          uses: azure/CLI@v1
+            client-id: ${{ secrets.AZ_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZ_TENANT_ID }}
+            subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
+        - name: Create namespace if doesn't exist
+          run: |
+            kubectl create namespace mc-ns --dry-run -o json | kubectl apply -f -
+        - name: Azure Set Kube context
+          uses: azure/aks-set-context@v3
           with:
-            azcliversion: latest
-            inlineScript: |
-              az account show
-    # The KUBECONFIG env var is automatically exported and picked up by kubectl.
-        - id: 'get-pods'
-          run: 'kubectl get pods'
+            resource-group: "mc-test-rg"
+            cluster-name: "mc-test-cluster"
+        - name: Deploy to AZURE AKS
+          uses: Azure/k8s-deploy@v5
+          with:
+            namespace: 'mc-ns'
+            manifests: ${{ steps.bake.outputs.manifestsBundle }}
