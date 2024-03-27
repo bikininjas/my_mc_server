@@ -34,7 +34,7 @@ jobs:
             tenant-id: ${{ secrets.AZ_TENANT_ID }}
             subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
         - name: Azure Set Kube context
-          uses: azure/aks-set-context@v3
+          uses: azure/aks-set-context@v4
           with:
             resource-group: "mc-test-rg"
             cluster-name: "mc-test-cluster"
