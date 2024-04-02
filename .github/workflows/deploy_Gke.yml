@@ -1,8 +1,8 @@
-name: Deploy Paper Server on AZURE
+name: Deploy Paper Server on GKE
 # This workflow represents a set of basic End-to-End tests
 on:
   push:
-    branches: master
+    branches: gke
   workflow_dispatch:
 
 jobs:
@@ -32,7 +32,7 @@ jobs:
           uses: 'google-github-actions/auth@v2'
           with:
             workload_identity_provider: 'projects/${{ secrets.GKE_PROJECT_ID }}/locations/global/workloadIdentityPools/${{ secrets.GKE_POOL }}/providers/${{ secrets.GKE_PROVIDER }}'
-            service_account: 'my-mc-server@sebsandbbox.iam.gserviceaccount.com'
+            service_account: '${{ secrets.GKE_SERVICE_ACCOUNT }}'
   
         - name: Get gke credentials
           id: 'get-credentials'
