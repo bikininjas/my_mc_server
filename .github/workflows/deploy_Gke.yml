@@ -1,0 +1,46 @@
+name: Deploy Paper Server on AZURE
+# This workflow represents a set of basic End-to-End tests
+on:
+  push:
+    branches: master
+  workflow_dispatch:
+
+jobs:
+    deploy_pull:
+      permissions:
+        id-token: write
+        contents: read
+        actions: read
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4.1.2
+        - name: Login to Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ vars.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+        - name: Transform docker compose to manifest using Kompose
+          id: bake
+          uses: azure/k8s-bake@v3
+          with:
+              renderEngine: 'kompose'
+              dockerComposeFile: './docker-compose.yml'
+              kompose-version: 'latest'
+        - name: Google Auth
+          id: 'auth'
+          uses: 'google-github-actions/auth@v2'
+          with:
+            workload_identity_provider: 'projects/${{ secrets.GKE_PROJECT_ID }}/locations/global/workloadIdentityPools/${{ secrets.GKE_POOL }}/providers/${{ secrets.GKE_PROVIDER }}'
+            service_account: 'my-mc-server@sebsandbbox.iam.gserviceaccount.com'
+  
+        - name: Get gke credentials
+          id: 'get-credentials'
+          uses: 'google-github-actions/get-gke-credentials@v2'
+          with:
+            cluster_name: 'mc-test-cluster'
+            location: 'europe-west9 '
+  
+        # The KUBECONFIG env var is automatically exported and picked up by kubectl.
+        - id: 'get-pods'
+          run: 'kubectl get pods'

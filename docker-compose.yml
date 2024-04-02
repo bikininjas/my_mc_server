@@ -12,12 +12,19 @@ services:
     environment:
       EULA: "TRUE"
       ENABLE_AUTOPAUSE: "TRUE"
+      USE_AIKAR_FLAGS: "TRUE"
+      ENABLE_ROLLING_LOGS: "TRUE"
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
       MAX_TICK_TIME: "-1"
       # More aggressive settings for demo purposes
       AUTOPAUSE_TIMEOUT_INIT: "30"
       AUTOPAUSE_TIMEOUT_EST: "10"
+      MOTD: "Welcome"
+      MAX_PLAYERS: "2"
+      JVM_OPTS: "-javaagent:./opentelemetry-javaagent.jar"
       SPIGET_RESOURCES: 34315,3836
+      OTEL_SERVICE_NAME: "paper-server"
+      OTEL_JAVAAGENT_CONFIGURATION_FILE: "path/to/properties/file.properties"
     restart: unless-stopped
 
 volumes:

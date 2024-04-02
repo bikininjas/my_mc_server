@@ -49,6 +49,25 @@ jobs:
         push: true
         context: .
         tags: ${{ steps.docker_metadatas.outputs.tags }}
+    - name: ACR build
+      id: acr
+      uses: azure/acr-build@v1
+      with:
+        service_principal: ${{ secrets.service_principal }}
+        service_principal_password: ${{ secrets.service_principal_password }}
+        tenant: ${{ secrets.AZ_TENANT_ID }}
+        registry: ${{ secrets.registry }}
+        repository: ${{ secrets.repository }}
+
+        client-id: ${{ secrets.AZ_CLIENT_ID }}
+        subscription-id: ${{ secrets.AZ_SUBSCRIPTION_ID }}
+      
+        image: image
+        git_access_token: ${{ secrets.GITHUB_TOKEN }}
+        folder: src/docker
+        dockerfile: ./Dockerfile
+        branch: main
+        build_args: '[{"arg_one":"value_one"}, {"arg_two":"value_two"}]'
     - name: GH Release
       uses: fregante/release-with-changelog@v3.6.1
       with:
@@ -66,14 +85,14 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         repository: ${{ vars.DOCKERHUB_USERNAME }}/paper-server
         short-description: ${{ github.event.repository.description }}
-  # reporting:
-  #   needs: build-push
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: Actions for Discord
-  #     env:
-  #       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-  #     uses: Ilshidur/action-discord@0.3.2
-  #     with:
-  #       args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been built and pushed.'
+  reporting:
+    needs: build-push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Actions for Discord
+      env:
+        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      uses: Ilshidur/action-discord@0.3.2
+      with:
+        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been built and pushed : ${{ steps.docker_metadatas.outputs.tags }}.'
     
