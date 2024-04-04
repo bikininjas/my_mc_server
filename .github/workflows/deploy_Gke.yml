@@ -39,7 +39,7 @@ jobs:
           uses: 'google-github-actions/get-gke-credentials@v2'
           with:
             cluster_name: 'mc-test-cluster'
-            location: 'europe-west9 '
+            location: 'europe-west9'
   
         # The KUBECONFIG env var is automatically exported and picked up by kubectl.
         - id: 'get-pods'
